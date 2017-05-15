@@ -1,7 +1,7 @@
 {-#  LANGUAGE BangPatterns, CPP, ForeignFunctionInterface, MagicHash,
         NoImplicitPrelude, UnboxedTuples, UnliftedFFITypes #-}
 
-module Data.Word.CarryUtils where
+module Data.CarryUtils where
 
 import GHC.Prim
 import Data.Word

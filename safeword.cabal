@@ -48,10 +48,11 @@ cabal-version:       >=1.10
 
 library
   -- Modules exported by the library.
-  exposed-modules:    Data.Word.Saturating
-                      ,Data.Word.Wrapping
-                      ,Data.Word.Signalling
-                      ,Data.Word.CarryUtils
+  exposed-modules:    Data.Word128.Saturating
+                      ,Data.Word128.Wrapping
+                      ,Data.Word128.Signalling
+                      ,Data.CarryUtils
+                      ,Data.Word64
 
   -- Modules included in this library but not exported.
   -- other-modules:
