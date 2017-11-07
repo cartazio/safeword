@@ -149,7 +149,7 @@ instance Num Word128 where
                   | otherwise -- negative and smaller than minBound:: Int
                       = let nbint = negate bint
                           in
-                            error "finish meee"
+                            fromInteger nbint
 
 
 
