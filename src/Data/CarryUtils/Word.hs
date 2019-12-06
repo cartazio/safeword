@@ -1,7 +1,24 @@
 {-#  LANGUAGE BangPatterns, CPP, ForeignFunctionInterface, MagicHash,
         NoImplicitPrelude, UnboxedTuples, UnliftedFFITypes #-}
 
-module Data.CarryUtils where
+module Data.CarryUtils.Word(
+  boxInt#
+  ,boxWord#
+  ,boxDouble#
+  ,unboxWord
+  ,unboxInt
+  ,unboxDouble
+  ,plusWord
+  ,plusWord2
+  ,plusWord3
+  ,plusWord4
+  ,minusWord2
+  ,minusWord2C
+  ,timesWord2
+  ,timesWord2C
+  ,timesWord2CC
+
+  ) where
 
 import GHC.Prim
 import Data.Word
@@ -16,7 +33,7 @@ import Data.Word
 import GHC.Base (Int (..), Word (..))
 import GHC.Float (Double (..))
 import GHC.Types (isTrue#)
-import GHC.Prim
+
 
 -- Many of these primitives are defined in compiler/prelude/primops.txt.pp
 -- from the GHC source tree (both the Git tree and the distribution tarball.
@@ -52,6 +69,8 @@ plusWord :: Word -> Word -> Word
 plusWord (W# a) (W# b) =
     let !s = plusWord# a b
     in W# s
+
+--- for add with carry, result is (# high word aka carry , low word #)
 
 {-# INLINE plusWord2 #-}
 plusWord2 :: Word -> Word -> (# Word, Word #)

@@ -37,7 +37,7 @@ data Word128 =
 --          {-# UNPACK #-} !Word128  -- low bits
 --    deriving(Eq,Data,Typeable)
 #else
-
+#error "this is very strange"
 #endif
 -- NB on 32bit systems we *may* be able to do a faster Ord Word128 instance
 -- but this depends on the rep of word64 in that context
@@ -138,10 +138,12 @@ word64IntegerMask = 0xffffffffffffffff
     --ones64 = complement (zeroBits :: Word64)
 
 instance Num Word128 where
- abs = id
- signum = \ x ->  if x == W128# 0 0 then 0 else 1
- negate = \ w -> twosComplementNegateW128 w
- fromInteger bint |  bint >= fromIntegral (minBound :: Int)
+  (*) = \ x y -> error "implement *"
+  (+) = \ x y -> error "implement + "
+  abs = id
+  signum = \ x ->  if x == W128# 0 0 then 0 else 1
+  negate = \ w -> twosComplementNegateW128 w
+  fromInteger bint |  bint >= fromIntegral (minBound :: Int)
                       && bint <= fromIntegral (maxBound :: Int)
                     = W128# 0 (fromIntegral (fromInteger bint :: Int ))
                   | bint > fromIntegral (maxBound :: Int)

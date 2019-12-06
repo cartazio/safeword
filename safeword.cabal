@@ -51,9 +51,11 @@ library
   exposed-modules:    Data.Word128.Saturating
                       ,Data.Word128.Wrapping
                       ,Data.Word128.Signalling
-                      ,Data.CarryUtils
+                      -- ,Data.CarryUtils
                       ,Data.Word64
                       ,Data.Word.Signalling
+                      ,Data.CarryUtils.Word
+                      ,Data.CarryUtils.Word64
 
   -- Modules included in this library but not exported.
   -- other-modules:
@@ -62,7 +64,7 @@ library
   -- other-extensions:
 
   -- Other library packages from which modules are imported.
-  build-depends:       base >=4.9 && <4.12
+  build-depends:       base >=4.9 && <4.16
                       ,ghc-prim
 
   -- Directories containing source files.
@@ -70,4 +72,19 @@ library
 
   -- Base language which the package is written in.
   default-language:    Haskell2010
+
+Test-suite testsuite
+   default-language: Haskell2010
+   type: exitcode-stdio-1.0
+   build-depends:    base
+        ,tasty
+   ghc-options: -threaded
+   hs-source-dirs: tests
+   main-is: Main.hs
+   other-modules:
+        -- Only modules which are part of the test suite and not the library
+        -- should be listed here. These modules are excluded from the coverage
+        -- report because their coverage will be 100%.
+
+
 
