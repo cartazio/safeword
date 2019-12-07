@@ -100,7 +100,7 @@ plusWord4 (W64# a) (W64# b) (W64# c) (W64# d) =
     in (# W64# carry, W64# s3 #)
 
 {-# INLINE minusWord2 #-}
-minusWord2 :: Word64 -> Word64 -> (# Word64, Word64 #)
+minusWord2 :: Word64 -> Word64 -> (# Word64, Word64 #) -- (Borrow flag, Word64)
 minusWord2 (W64# a) (W64# b) =
     let !diff = minusWord# a b
         -- TODO : Really need a minusWord2# PrimOp.
