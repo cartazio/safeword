@@ -44,6 +44,8 @@ data Word128 =
 -- so not doing for now
 
 
+
+
 instance Ord Word128 where
   compare (W128# hw1 lw1) (W128# hw2 lw2) =
       case compare hw1 hw2 of

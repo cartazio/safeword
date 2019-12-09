@@ -52,7 +52,7 @@ library
                       ,Data.Word128.Wrapping
                       ,Data.Word128.Signalling
                       -- ,Data.CarryUtils
-                      ,Data.Word64
+
                       ,Data.Word.Signalling
                       ,Data.CarryUtils.Word
                       ,Data.CarryUtils.Word64
