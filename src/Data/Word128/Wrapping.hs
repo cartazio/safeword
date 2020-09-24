@@ -1,21 +1,23 @@
 {-# LANGUAGE CPP #-}
-{-# LANGUAGE MagicHash #-}
+{-# LANGUAGE MagicHash, UnboxedTuples #-}
 {-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 
 module Data.Word128.Wrapping(
-  Word64(..)
-  ,Word32(..)
-  ,Word128(..)
+  --Word64(..)
+  --,Word32(..)
+  Word128(..)
   ,nativeWordSize
  )where
 
-import Data.Word(Word32(..)
-                ,Word64(..)
-                ,byteSwap32,byteSwap64)
+import Data.Word(
+                Word64
+                --,byteSwap32,byteSwap64
+                )
 import Data.Data (Data,Typeable)
 import Data.Bits
+import  Data.CarryUtils.Word64
 
 #include "MachDeps.h"
 
@@ -32,10 +34,10 @@ data Word128 =
           {-# UNPACK #-} !Word64  -- low bits
     deriving(Eq,Data,Typeable)
 
---data Word256 =
---    W256# {-# UNPACK #-} !Word128  -- high bits
---          {-# UNPACK #-} !Word128  -- low bits
---    deriving(Eq,Data,Typeable)
+data Word256 =
+    W256# {-# UNPACK #-} !Word128  -- high bits
+          {-# UNPACK #-} !Word128  -- low bits
+    deriving(Eq,Data,Typeable)
 #else
 #error "this is very strange"
 #endif
@@ -47,18 +49,18 @@ data Word128 =
 
 
 instance Ord Word128 where
-  compare (W128# hw1 lw1) (W128# hw2 lw2) =
+  compare = \  (W128# hw1 lw1) (W128# hw2 lw2) ->
       case compare hw1 hw2 of
         GT -> GT
         EQ -> compare lw1 lw2
         LT -> LT
 
---instance Ord Word256 where
---  compare (W256# hw1 lw1) (W256# hw2 lw2) =
---      case compare hw1 hw2 of
---        GT -> GT
---        EQ -> compare lw1 lw2
---        LT -> LT
+instance Ord Word256 where
+  compare (W256# hw1 lw1) (W256# hw2 lw2) =
+      case compare hw1 hw2 of
+        GT -> GT
+        EQ -> compare lw1 lw2
+        LT -> LT
 
 
 {-
@@ -94,7 +96,7 @@ instance Bits Word128 where
                                            ((hw `shift` negate (i - 64) )  .|.  (lw  `unsafeShiftR` i))
                                where
                                   !i' = i .&. 127
-    w@(W128# hw1 lw1) `rotate` i = unsafeShiftL w modi  .|. unsafeShiftR w modtrani
+    w@(W128# _hw1 _lw1) `rotate` i = unsafeShiftL w modi  .|. unsafeShiftR w modtrani
         where
                     modi =  i .&. 127  -- equiv to  i `mod` 128
                     modtrani = 128 - modi
@@ -121,27 +123,33 @@ instance FiniteBits Word128 where
   -- todo: is there a better way to implement CLZ and CTZ?
   countLeadingZeros (W128# hw lw)  | hw /= 0 = countLeadingZeros hw
                                    | otherwise = 64 + countLeadingZeros lw
+
   countTrailingZeros (W128# hw lw) | lw /= 0 = countTrailingZeros lw
                                    | otherwise = 64 + countTrailingZeros hw
 
 twosComplementNegateW128 :: Word128 -> Word128
-twosComplementNegateW128 w = (complement w) + 1
+twosComplementNegateW128 =  \ w ->  (complement w) + 1
 
-intMinBound, intMaxBound :: Integer
-intMaxBound = fromIntegral (maxBound :: Int)
-intMinBound = fromIntegral (minBound :: Int )
+--intMinBound, intMaxBound :: Integer
+--intMaxBound = fromIntegral (maxBound :: Int)
+--intMinBound = fromIntegral (minBound :: Int )
 
-word128IntegerMask :: Integer
-word128IntegerMask = 0xffffffffffffffffffffffffffffffff
+--word128IntegerMask :: Integer
+--word128IntegerMask = 0xffffffffffffffffffffffffffffffff
 
-word64IntegerMask :: Integer
-word64IntegerMask = 0xffffffffffffffff
+--word64IntegerMask :: Integer
+--word64IntegerMask = 0xffffffffffffffff
   --where
     --ones64 = complement (zeroBits :: Word64)
 
 instance Num Word128 where
   (*) = \ x y -> error "implement *"
-  (+) = \ x y -> error "implement + "
+  (+) = \ (W128# hw1 lw1) (W128# hw2 lw2) ->
+              let
+                !(# hwcarry, lwres #) = plusWord2 lw1 lw2
+                !(# _hhwcarry, hwres #) = plusWord3 hw1 hw2 hwcarry
+                in
+                  W128# hwres lwres
   abs = id
   signum = \ x ->  if x == W128# 0 0 then 0 else 1
   negate = \ w -> twosComplementNegateW128 w
