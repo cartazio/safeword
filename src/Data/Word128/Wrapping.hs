@@ -24,9 +24,10 @@ import  qualified Data.CarryUtils.Word64 as CU64
 nativeWordSize :: Word64
 nativeWordSize = WORD_SIZE_IN_BITS
 
-{-# inline oneBits #-}
+{-{-# inline oneBits #-}
 oneBits :: (FiniteBits b) => b
 oneBits = complement zeroBits
+-}
 
 #if WORD_SIZE_IN_BITS == 64 || WORD_SIZE_IN_BITS == 32
 data Word128 =
