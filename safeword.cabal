@@ -55,7 +55,7 @@ library
                       -- ,Data.CarryUtils
 
                       ,Data.Word.Signalling
-                      ,Data.CarryUtils.Word
+                      -- ,Data.CarryUtils.Word
                       ,Data.CarryUtils.Word64
 
   -- Modules included in this library but not exported.

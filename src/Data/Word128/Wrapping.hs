@@ -17,7 +17,7 @@ import Data.Word(
                 )
 import Data.Data (Data,Typeable)
 import Data.Bits
-import  Data.CarryUtils.Word64
+import  qualified Data.CarryUtils.Word64 as CU64
 
 #include "MachDeps.h"
 
@@ -39,7 +39,7 @@ data Word256 =
           {-# UNPACK #-} !Word128  -- low bits
     deriving(Eq,Data,Typeable)
 #else
-#error "this is very strange"
+#error "this is very strange, your platform isn't Word 32/64 native"
 #endif
 -- NB on 32bit systems we *may* be able to do a faster Ord Word128 instance
 -- but this depends on the rep of word64 in that context
@@ -142,12 +142,20 @@ twosComplementNegateW128 =  \ w ->  (complement w) + 1
   --where
     --ones64 = complement (zeroBits :: Word64)
 
+
+
+
 instance Num Word128 where
-  (*) = \ x y -> error "implement *"
+  (*) = \ (W128# hix lowx) (W128# hiy lowy ) ->
+           let (# !lo2hiCarry , !lowres #)  = CU64.timesWord2 lowx lowy
+           in  W128# (lowx * hiy + lowy* hix + lo2hiCarry) lowres
+           -- we drop/dont use the carry bits or the  hix * hiy bits because
+           -- we are doing wrapping math!
+
   (+) = \ (W128# hw1 lw1) (W128# hw2 lw2) ->
               let
-                !(# hwcarry, lwres #) = plusWord2 lw1 lw2
-                !(# _hhwcarry, hwres #) = plusWord3 hw1 hw2 hwcarry
+                !(# hwcarry, lwres #) = CU64.plusWord2 lw1 lw2
+                !(# _hhwcarry, hwres #) = CU64.plusWord3 hw1 hw2 hwcarry
                 in
                   W128# hwres lwres
   abs = id
