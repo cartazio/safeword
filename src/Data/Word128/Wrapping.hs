@@ -161,7 +161,9 @@ instance Num Word128 where
                   W128# hwres lwres
   abs = id
   signum = \ x ->  if x == W128# 0 0 then 0 else 1
+  -- negate is kinda a strange critter on unsigned things :)
   negate = \ w -> twosComplementNegateW128 w
+  -- binary int == "bin int" == bint shorthand,
   fromInteger bint |  bint >= fromIntegral (minBound :: Int)
                       && bint <= fromIntegral (maxBound :: Int)
                     = W128# 0 (fromIntegral (fromInteger bint :: Int ))
@@ -172,5 +174,56 @@ instance Num Word128 where
                           in
                             fromInteger nbint
 
+instance Real Word128 where
+   toRational = \ wd ->      fromIntegral wd
+
+instance Enum Word128 where
+  fromEnum  = error "you called fromEnum on Word128, think about your goals and fix the code"
+  toEnum = error "you called toEnum to convert an int to word128, think about this and be the change in your code"
+  succ = \ x -> x + 1
+  pred = \ x -> x - 1
+  enumFrom x =  x : enumFrom (1 + x )
+  enumFromTo lo hi | hi < lo = []
+                   | otherwise =  lo : enumFromTo (lo + 1) hi
+  enumFromThen lo loplusdelta =  enumFromDelta lo (loplusdelta - lo)
+    where
+      enumFromDelta mlo delta = mlo : enumFromDelta (mlo + delta) delta
+  enumFromThenTo lo loplusdelta hi  = enumFromDeltaTo lo (loplusdelta - lo )
+    where
+      enumFromDeltaTo xlo delta  | xlo > hi = []
+                                 | otherwise = xlo : enumFromDeltaTo (xlo + delta)  delta
+
+
+{-
+conceptually, at first you might think "how can we nicely define
+ divmod for these big words in a nice way"
+ option a) long division!
+ option b)
+
+-}
+
+instance Integral Word128 where
+  toInteger  = \ (W128# hi lo) ->   unsafeShiftL (toInteger hi ) 64 + toInteger lo
+  divMod = \ num denom  ->  undefined
+  quotRem = divMod
+
+
+
+
+{-
+
+
+
+
+
+
+
+
+
+
+
+
+
+-}
 
 
