@@ -188,6 +188,7 @@ instance Enum Word128 where
   enumFromThen lo loplusdelta =  enumFromDelta lo (loplusdelta - lo)
     where
       enumFromDelta mlo delta = mlo : enumFromDelta (mlo + delta) delta
+
   enumFromThenTo lo loplusdelta hi  = enumFromDeltaTo lo (loplusdelta - lo )
     where
       enumFromDeltaTo xlo delta  | xlo > hi = []
