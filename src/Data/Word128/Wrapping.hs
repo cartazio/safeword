@@ -201,13 +201,28 @@ conceptually, at first you might think "how can we nicely define
  option a) long division!
  option b)
 
+
+type Integral :: * -> Constraint
+class (Real a, Enum a) => Integral a where
+  quot :: a -> a -> a
+  rem :: a -> a -> a
+  div :: a -> a -> a
+  mod :: a -> a -> a
+  quotRem :: a -> a -> (a, a)
+  divMod :: a -> a -> (a, a)
+  toInteger :: a -> Integer
+  {-# MINIMAL quotRem, toInteger #-}
 -}
 
 instance Integral Word128 where
   toInteger  = \ (W128# hi lo) ->   unsafeShiftL (toInteger hi ) 64 + toInteger lo
-  divMod = \ num denom  ->  undefined
-  quotRem = divMod
-
+  --divMod = \ num denom  ->  undefined
+  quotRem = \ num@(W128# hiN loN) dem@(W128# hiD loD) ->
+              if (hiD == 0 && loD == 0 ) then error "division by zero in  quotRem"
+                else undefined hiD loD hiN loN dem num
+  divMod = quotRem
+  div = undefined
+  quot = undefined
 
 
 

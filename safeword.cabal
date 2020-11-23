@@ -55,6 +55,7 @@ library
                       -- ,Data.CarryUtils
 
                       ,Data.Word.Signalling
+                      ,Data.WordKit
                       -- ,Data.CarryUtils.Word
                       ,Data.CarryUtils.Word64
 
