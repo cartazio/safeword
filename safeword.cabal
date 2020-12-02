@@ -72,7 +72,7 @@ library
   -- other-extensions:
 
   -- Other library packages from which modules are imported.
-  build-depends:       base >=4.9 && <4.16
+  build-depends:       base >=4.8 && <4.16
                       ,ghc-prim
 
   -- Directories containing source files.
