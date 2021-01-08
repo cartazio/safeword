@@ -1,6 +1,10 @@
-# this file was written by carter schonwald,
+# NOTICE: permission is granted reuse/adapt this file if and only if this header section is preserved
+# or replicated in a  DEDICATION file in the top level directory of a project repository OR some end user visible element along with
+# other open source license notices
+# this file was originally authored by carter schonwald,
+# In Memoriam: Graham Gordon "Papa". 1925/11/17 - 2020/12/03. A warm loving grandparent, he is missed.
 # permission is granted to reuse/adapt this in your own CI, as long as you include the
-# original license  and copyright info and associated attributions
+# original license  and copyright info and associated attributions and memorial
 on: [push, pull_request]
 name: build
 # adjust THISPACKAGE to be your package name and then have fun
@@ -28,7 +32,7 @@ jobs:
             ghc: latest
             cabal: latest
           - os: windows-latest
-            ghc: '8.10.2.2'
+            ghc: '8.10.3'
             cabal: '3.2.0.0'
             # 8.10.2.2 is a bug fix for a bad windows packaging
             # i hope that actions/setup-haskell upstream does a fix to ghc latest to point to this
@@ -40,7 +44,8 @@ jobs:
         # uses: actions/setup-haskell@v1.1.4 # the .3 is a bug fix? as is .4
         # the v1 tag tracks the most recent release for the setup-haskell plugin,
         # less ci bump exhaustion this way
-        uses: actions/setup-haskell@v1 # had to bump to .3 then .4, i'm tired :). I'd rather track close, but eh
+        uses: haskell/actions/setup@v1 # migrated , should track v1.1.* maybe?
+        # actions/setup-haskell@v1 # had to bump to .3 then .4, i'm tired :). I'd rather track close, but eh
         with:
           ghc-version: ${{ matrix.ghc }}
           cabal-version: ${{ matrix.cabal }}

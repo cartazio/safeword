@@ -74,6 +74,7 @@ library
   -- Other library packages from which modules are imported.
   build-depends:       base >=4.8 && <4.16
                       ,ghc-prim
+                      ,wide-word ^>= 0.1.1
 
   -- Directories containing source files.
   hs-source-dirs:      src
@@ -87,6 +88,7 @@ Test-suite testsuite
    type: exitcode-stdio-1.0
    build-depends:    base
         ,tasty
+        ,safeword
    ghc-options: -threaded
    hs-source-dirs: tests
    main-is: Main.hs
